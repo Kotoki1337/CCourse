@@ -24,6 +24,8 @@ key_vectors = {
     Keyboard.keycodes['left']: (-1, 0),
 }
 
+new_number = (
+    2, 2, 2, 2, 4)
 
 class Tile(Widget):
     font_size = NumericProperty(24)
@@ -31,10 +33,10 @@ class Tile(Widget):
     color = ListProperty(get_color_from_hex(tile_colors[2]))
     number_color = ListProperty(get_color_from_hex('776e65'))
 
-    def __init__(self, number=2, **kwargs):
+    def __init__(self, **kwargs):
         super(Tile, self).__init__(**kwargs)
         self.font_size = 0.5 * self.width
-        self.number = number
+        self.number = random.choice(new_number)
         self.update_colors()
 
     def update_colors(self):
@@ -49,8 +51,8 @@ class Tile(Widget):
 
 
 def all_cells(flip_x=False, flip_y=False):
-    for x in (reversed(range(4)) if flip_x else range(4)):
-        for y in (reversed(range(4)) if flip_y else range(4)):
+    for x in (reversed(range(5)) if flip_x else range(5)):
+        for y in (reversed(range(5)) if flip_y else range(5)):
             yield (x, y)
 
 
@@ -63,7 +65,7 @@ class Board(Widget):
         self.resize()
 
     def reset(self):
-        self.b = [[None for i in range(4)] for j in range(4)]
+        self.b = [[None for i in range(5)] for j in range(5)]
         self.new_tile()
         self.new_tile()
 
@@ -140,7 +142,7 @@ class Board(Widget):
 
     def valid_cell(self, board_x, board_y):
         return(board_x >= 0 and board_y >= 0 and
-               board_x <= 3 and board_y <= 3)
+               board_x <= 4 and board_y <= 4)
 
     def can_move(self, board_x, board_y):
         return(self.valid_cell(board_x, board_y) and
@@ -156,7 +158,7 @@ class Board(Widget):
                 self.y + board_y * (self.cell_size[1] + spacing) + spacing)
 
     def resize(self, *args):
-        self.cell_size = (0.25 * (self.width - 5 * spacing), ) * 2
+        self.cell_size = (0.1945 * (self.width - 5 * spacing), ) * 2
 
         self.canvas.before.clear()
         with self.canvas.before:
@@ -164,7 +166,7 @@ class Board(Widget):
             Color(*get_color_from_hex('ccc0b4'))
             for board_x, board_y in all_cells():
                 BorderImage(pos=self.cell_pos(board_x, board_y),
-                            size=self.cell_size, source='cell,png')
+                            size=self.cell_size, source='cell.png')
 
         if not self.b:
             return
